@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7347C23F-72CB-4845-A3B1-D1EBE4CFB863}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimCube.Aspire.Components", "src\SimCube.Aspire.Components\SimCube.Aspire.Components.csproj", "{D5003CE8-178B-4F67-AC5F-D32E6C54562D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{8395A4D3-01B9-4AD7-B48A-9BEF168D0241}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.TXT = LICENSE.TXT
+		build.cake = build.cake
+		dotnet-tools.json = dotnet-tools.json
+		nuget.config = nuget.config
+		renovate.json = renovate.json
+		release-please-config.json = release-please-config.json
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "props", "props", "{433E90E5-0533-4F69-89E1-4EF9AA76B94B}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{426FADE6-C8EA-4C3B-B970-079542EE8F0E}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\release-please.yaml = .github\workflows\release-please.yaml
+		.github\workflows\conventional-commits.yaml = .github\workflows\conventional-commits.yaml
+		.github\workflows\pull-requests.yaml = .github\workflows\pull-requests.yaml
+		.github\workflows\main.yaml = .github\workflows\main.yaml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5003CE8-178B-4F67-AC5F-D32E6C54562D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5003CE8-178B-4F67-AC5F-D32E6C54562D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5003CE8-178B-4F67-AC5F-D32E6C54562D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5003CE8-178B-4F67-AC5F-D32E6C54562D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D5003CE8-178B-4F67-AC5F-D32E6C54562D} = {7347C23F-72CB-4845-A3B1-D1EBE4CFB863}
+		{433E90E5-0533-4F69-89E1-4EF9AA76B94B} = {8395A4D3-01B9-4AD7-B48A-9BEF168D0241}
+		{426FADE6-C8EA-4C3B-B970-079542EE8F0E} = {8395A4D3-01B9-4AD7-B48A-9BEF168D0241}
+	EndGlobalSection
+EndGlobal
