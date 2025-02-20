@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.0.1](https://github.com/SimCubeLtd/aspire-components/compare/v9.0.0...v9.0.1) (2025-02-20)
+
+
+### ⚙️ Chores
+
+* add volativity support ([9d766ed](https://github.com/SimCubeLtd/aspire-components/commit/9d766edc3a3c33fabf63639cf048e76e71f7f741))
+
 ## [9.0.0](https://github.com/SimCubeLtd/aspire-components/compare/v9.0.0...v9.0.0) (2025-02-16)
 
 
