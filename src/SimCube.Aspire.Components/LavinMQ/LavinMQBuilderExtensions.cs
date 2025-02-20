@@ -8,12 +8,16 @@ public static class LavinMQBuilderExtensions
 
         var instance = builder
             .AddLavinMQServerInstance("lavinmq")
-            .WithDataVolume("lavinmq-data", isReadOnly: false)
             .WithContainerName("lavinmq");
 
         if (builder.KeepContainersRunning())
         {
             instance.WithLifetime(ContainerLifetime.Persistent);
+        }
+
+        if (!builder.Volatile())
+        {
+            instance.WithDataVolume("lavinmq-data", isReadOnly: false);
         }
 
         return instance;

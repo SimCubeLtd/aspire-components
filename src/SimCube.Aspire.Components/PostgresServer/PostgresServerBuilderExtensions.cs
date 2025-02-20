@@ -11,15 +11,20 @@ public static class PostgresServerBuilderExtensions
         var username = builder.AddParameter("postgresserver-username", DefaultUsername, secret: true);
 
         var instance = builder.AddPostgres("postgresserver", userName: username, password: password, port: 5432)
-            .WithEndpoint("tcp", annotation =>
-            {
-                annotation.Port = 5432;
-                annotation.TargetPort = 5432;
-                annotation.IsProxied = false;
-            })
+            .WithEndpoint(
+                "tcp", annotation =>
+                {
+                    annotation.Port = 5432;
+                    annotation.TargetPort = 5432;
+                    annotation.IsProxied = false;
+                })
             .WithEnvironment("POSTGRES_PASSWORD", password)
-            .WithContainerName("postgresql")
-            .WithDataVolume(isReadOnly: false, name: "postgres-data");
+            .WithContainerName("postgresql");
+
+        if (!builder.Volatile())
+        {
+            instance.WithDataVolume(isReadOnly: false, name: "postgres-data");
+        }
 
         var keepRunning = builder.KeepContainersRunning();
 
