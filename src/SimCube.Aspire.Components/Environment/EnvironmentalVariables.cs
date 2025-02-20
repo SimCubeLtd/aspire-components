@@ -7,4 +7,9 @@ public static class EnvironmentalVariables
     {
         public const string KeepRunning = Root + "CONTAINER_LIFETIME_KEEP_RUNNING";
     }
+
+    public static class ContainerPersistence
+    {
+        public const string Volatile = Root + "CONTAINER_PERSISTENCE_VOLATILE";
+    }
 }

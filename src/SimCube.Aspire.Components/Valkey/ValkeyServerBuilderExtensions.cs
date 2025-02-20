@@ -8,8 +8,12 @@ public static class ValkeyServerBuilderExtensions
 
         var instance = builder
             .AddValkeyServer("valkey")
-            .WithDataVolume(isReadOnly: false)
             .WithContainerName("valkey");
+
+        if (!builder.Volatile())
+        {
+            instance.WithDataVolume(isReadOnly: false);
+        }
 
         var keepRunning = builder.KeepContainersRunning();
 

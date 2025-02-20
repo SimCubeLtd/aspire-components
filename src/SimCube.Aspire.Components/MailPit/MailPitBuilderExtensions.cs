@@ -10,12 +10,16 @@ public static class MailPitBuilderExtensions
 
         var instance = builder
             .AddMailpit("mailpit")
-            .WithDataVolume("mailpit-data", isReadOnly: false)
             .WithContainerName("mailpit");
 
         if (builder.KeepContainersRunning())
         {
             instance.WithLifetime(ContainerLifetime.Persistent);
+        }
+
+        if (!builder.Volatile())
+        {
+            instance.WithDataVolume("mailpit-data", isReadOnly: false);
         }
 
         return instance;

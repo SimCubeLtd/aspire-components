@@ -8,12 +8,16 @@ public static class AzuriteBuilderExtensions
 
         var instance = builder
             .AddAzurite("azurite")
-            .WithDataVolume("azurite-data", isReadOnly: false)
             .WithContainerName("azurite");
 
         if (builder.KeepContainersRunning())
         {
             instance.WithLifetime(ContainerLifetime.Persistent);
+        }
+
+        if (!builder.Volatile())
+        {
+            instance.WithDataVolume("azurite-data", isReadOnly: false);
         }
 
         return instance;
