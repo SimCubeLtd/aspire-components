@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.0.2](https://github.com/SimCubeLtd/aspire-components/compare/v9.0.1...v9.0.2) (2025-02-28)
+
+
+### ⚙️ Chores
+
+* update to aspire 9.1 ([ef8b2fe](https://github.com/SimCubeLtd/aspire-components/commit/ef8b2fe6a420f6e980942f4ffcd70f551370f6f9))
+
 ## [9.0.1](https://github.com/SimCubeLtd/aspire-components/compare/v9.0.0...v9.0.1) (2025-02-20)
 
 
