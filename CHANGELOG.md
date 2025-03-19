@@ -1,5 +1,13 @@
 # Changelog
 
+## [9.0.3](https://github.com/SimCubeLtd/aspire-components/compare/v9.0.2...v9.0.3) (2025-03-19)
+
+
+### 🔥 Bug Fixes
+
+* remove needed password for redis ([6f5b1d6](https://github.com/SimCubeLtd/aspire-components/commit/6f5b1d6239fced5ef6912f4346c87c40d9a4401d))
+* remove needed password for redis ([7232219](https://github.com/SimCubeLtd/aspire-components/commit/723221912463fa1eb85707e795f5102e4e7093fc))
+
 ## [9.0.2](https://github.com/SimCubeLtd/aspire-components/compare/v9.0.1...v9.0.2) (2025-02-28)
 
 
