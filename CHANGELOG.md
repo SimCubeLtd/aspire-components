@@ -1,5 +1,18 @@
 # Changelog
 
+## [9.0.4](https://github.com/SimCubeLtd/aspire-components/compare/v9.0.3...v9.0.4) (2025-03-19)
+
+
+### 🔥 Bug Fixes
+
+* cpm ([c17ee56](https://github.com/SimCubeLtd/aspire-components/commit/c17ee56ee0a23d15d8c95b790dad07e82bf7865f))
+
+
+### ⚙️ Chores
+
+* **sln:** convert sln to slnx, and fix redis-insights and commander ports ([3b7adc8](https://github.com/SimCubeLtd/aspire-components/commit/3b7adc81764eb850dfad402b89c82dd0263c987e))
+* **sln:** convert sln to slnx, and fix redis-insights and commander ports ([0c7d7f9](https://github.com/SimCubeLtd/aspire-components/commit/0c7d7f9bffd42288a5e73a706574fb1f916f8eb1))
+
 ## [9.0.3](https://github.com/SimCubeLtd/aspire-components/compare/v9.0.2...v9.0.3) (2025-03-19)
 
 
