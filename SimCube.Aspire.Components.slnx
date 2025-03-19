@@ -1,0 +1,26 @@
+﻿<Solution>
+  <Folder Name="/eng/">
+    <File Path="LICENSE.TXT" />
+    <File Path="build.cake" />
+    <File Path="dotnet-tools.json" />
+    <File Path="nuget.config" />
+    <File Path="renovate.json" />
+    <File Path="release-please-config.json" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/eng/github/">
+    <File Path=".github\workflows\release-please.yaml" />
+    <File Path=".github\workflows\conventional-commits.yaml" />
+    <File Path=".github\workflows\pull-requests.yaml" />
+    <File Path=".github\workflows\main.yaml" />
+  </Folder>
+  <Folder Name="/eng/props/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="playground\Test.AppHost\Test.AppHost.csproj" Type="Classic C#" />
+    <Project Path="src\SimCube.Aspire.Components\SimCube.Aspire.Components.csproj" Type="Classic C#" />
+  </Folder>
+</Solution>
