@@ -1,6 +1,6 @@
 namespace SimCube.Aspire.Components.Valkey;
 
-public class ValkeyServerResource(string name, ParameterResource password)
+public class ValkeyServerResource(string name, ParameterResource? password)
     : ContainerResource(name), IResourceWithConnectionString
 {
     internal const string PrimaryEndpointName = "tcp";

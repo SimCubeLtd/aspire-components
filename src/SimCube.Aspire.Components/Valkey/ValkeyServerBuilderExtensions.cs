@@ -61,9 +61,7 @@ public static class ValkeyServerBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(name);
 
-        var passwordParameter = password?.Resource ?? ParameterResourceBuilderExtensions.CreateDefaultPasswordParameter(builder, $"{name}-password");
-
-        var valkey = new ValkeyServerResource(name, passwordParameter);
+        var valkey = new ValkeyServerResource(name, password?.Resource);
 
         string? connectionString = null;
 
