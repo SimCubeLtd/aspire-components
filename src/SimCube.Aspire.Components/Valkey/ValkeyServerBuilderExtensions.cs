@@ -130,7 +130,7 @@ public static class ValkeyServerBuilderExtensions
         var resourceBuilder = builder.ApplicationBuilder.AddResource(resource)
             .WithImage(ValkeyServerContainerImageTags.RedisCommanderImage, ValkeyServerContainerImageTags.RedisCommanderTag)
             .WithImageRegistry(ValkeyServerContainerImageTags.RedisCommanderRegistry)
-            .WithHttpEndpoint(port: 5052, targetPort: 80, name: "http", isProxied: false)
+            .WithHttpEndpoint(port: 5052, targetPort: 8081, name: "http", isProxied: false)
             .ExcludeFromManifest();
 
         builder.ApplicationBuilder.Eventing.Subscribe<AfterEndpointsAllocatedEvent>((e, ct) =>
@@ -180,55 +180,53 @@ public static class ValkeyServerBuilderExtensions
             configureContainer?.Invoke(builderForExistingResource);
             return builder;
         }
-        else
+
+        containerName ??= $"{builder.Resource.Name}-insight";
+
+        var resource = new RedisInsightResource(containerName);
+        var resourceBuilder = builder.ApplicationBuilder.AddResource(resource)
+            .WithImage(ValkeyServerContainerImageTags.RedisInsightImage, ValkeyServerContainerImageTags.RedisInsightTag)
+            .WithImageRegistry(ValkeyServerContainerImageTags.RedisInsightRegistry)
+            .WithHttpEndpoint(port: 5053, targetPort: 5540, name: "http", isProxied: false)
+            .ExcludeFromManifest();
+
+        // We need to wait for all endpoints to be allocated before attempting to import databases
+        var endpointsAllocatedTcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        builder.ApplicationBuilder.Eventing.Subscribe<AfterEndpointsAllocatedEvent>((e, ct) =>
         {
-            containerName ??= $"{builder.Resource.Name}-insight";
+            endpointsAllocatedTcs.TrySetResult();
+            return Task.CompletedTask;
+        });
 
-            var resource = new RedisInsightResource(containerName);
-            var resourceBuilder = builder.ApplicationBuilder.AddResource(resource)
-                                      .WithImage(ValkeyServerContainerImageTags.RedisInsightImage, ValkeyServerContainerImageTags.RedisInsightTag)
-                                      .WithImageRegistry(ValkeyServerContainerImageTags.RedisInsightRegistry)
-                                      .WithHttpEndpoint(port: 5053, targetPort: 80, name: "http", isProxied: false)
-                                      .ExcludeFromManifest();
+        builder.ApplicationBuilder.Eventing.Subscribe<ResourceReadyEvent>(resource, async (e, ct) =>
+        {
+            var valkeyInstances = builder.ApplicationBuilder.Resources.OfType<ValkeyServerResource>().ToList();
 
-            // We need to wait for all endpoints to be allocated before attempting to import databases
-            var endpointsAllocatedTcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-
-            builder.ApplicationBuilder.Eventing.Subscribe<AfterEndpointsAllocatedEvent>((e, ct) =>
+            if (!valkeyInstances.Any())
             {
-                endpointsAllocatedTcs.TrySetResult();
-                return Task.CompletedTask;
-            });
+                // No-op if there are no Valkey resources present.
+                return;
+            }
 
-            builder.ApplicationBuilder.Eventing.Subscribe<ResourceReadyEvent>(resource, async (e, ct) =>
-            {
-                var valkeyInstances = builder.ApplicationBuilder.Resources.OfType<ValkeyServerResource>().ToList();
+            // Wait for all endpoints to be allocated before attempting to import databases
+            await endpointsAllocatedTcs.Task.ConfigureAwait(false);
 
-                if (!valkeyInstances.Any())
-                {
-                    // No-op if there are no Valkey resources present.
-                    return;
-                }
+            var redisInsightResource = builder.ApplicationBuilder.Resources.OfType<RedisInsightResource>().Single();
+            var insightEndpoint = redisInsightResource.PrimaryEndpoint;
 
-                // Wait for all endpoints to be allocated before attempting to import databases
-                await endpointsAllocatedTcs.Task.ConfigureAwait(false);
+            using var client = new HttpClient();
+            client.BaseAddress = new($"{insightEndpoint.Scheme}://{insightEndpoint.Host}:{insightEndpoint.Port}");
 
-                var redisInsightResource = builder.ApplicationBuilder.Resources.OfType<RedisInsightResource>().Single();
-                var insightEndpoint = redisInsightResource.PrimaryEndpoint;
+            var rls = e.Services.GetRequiredService<ResourceLoggerService>();
+            var resourceLogger = rls.GetLogger(resource);
 
-                using var client = new HttpClient();
-                client.BaseAddress = new($"{insightEndpoint.Scheme}://{insightEndpoint.Host}:{insightEndpoint.Port}");
+            await ImportRedisDatabases(resourceLogger, valkeyInstances, client, ct).ConfigureAwait(false);
+        });
 
-                var rls = e.Services.GetRequiredService<ResourceLoggerService>();
-                var resourceLogger = rls.GetLogger(resource);
+        configureContainer?.Invoke(resourceBuilder);
 
-                await ImportRedisDatabases(resourceLogger, valkeyInstances, client, ct).ConfigureAwait(false);
-            });
-
-            configureContainer?.Invoke(resourceBuilder);
-
-            return builder;
-        }
+        return builder;
 
         static async Task ImportRedisDatabases(ILogger resourceLogger, IEnumerable<ValkeyServerResource> valkeyInstances, HttpClient client, CancellationToken cancellationToken)
         {
