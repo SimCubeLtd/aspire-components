@@ -78,7 +78,8 @@ public static class LavinMQBuilderExtensions
                           context.EnvironmentVariables["LAVINMQ_PASSWORD"] = instance.PasswordReference;
                           context.EnvironmentVariables["LAVINMQ_VIRUALHOST"] = instance.VirtualHostReference;
                       })
-                      .WithHealthCheck(healthCheckKey);
+                      .WithHealthCheck(healthCheckKey)
+                      .WithUrlForEndpoint(LavinMQServerResource.ManagementEndpointName, u => u.DisplayText = "LavinMQ Management UI");
     }
 
     public static IResourceBuilder<LavinMQServerResource> WithDataVolume(this IResourceBuilder<LavinMQServerResource> builder, string name, bool isReadOnly = false)

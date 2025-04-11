@@ -39,6 +39,7 @@ public static class PostgresServerBuilderExtensions
                 options =>
                 {
                     options.WithContainerName("pgadmin");
+                    options.WithImageTag("9.2.0");
 
                     options.WithEndpoint("http", annotation =>
                     {
@@ -46,6 +47,8 @@ public static class PostgresServerBuilderExtensions
                         annotation.TargetPort = 80;
                         annotation.IsProxied = false;
                     });
+
+                    options.WithUrlForEndpoint("http", u => u.DisplayText = "PG Admin");
 
                     if (keepRunning)
                     {
