@@ -9,7 +9,7 @@ internal static class ValkeyServerContainerImageTags
     public const string Image = "valkey/valkey";
 
     /// <remarks>8.0.2-alpine</remarks>
-    public const string Tag = "8.0.2-alpine";
+    public const string Tag = "8.1.0-alpine";
 
     public const string RedisCommanderRegistry = "docker.io";
 
@@ -26,5 +26,5 @@ internal static class ValkeyServerContainerImageTags
     public const string RedisInsightImage = "redis/redisinsight";
 
     /// <remarks>2.64</remarks>
-    public const string RedisInsightTag = "2.64";
+    public const string RedisInsightTag = "2.68";
 }

@@ -9,5 +9,5 @@ internal static class AzuriteContainerImageTags
     public const string Image = "azure-storage/azurite";
 
     /// <remarks>3.33.0</remarks>
-    public const string Tag = "3.33.0";
+    public const string Tag = "3.34.0";
 }

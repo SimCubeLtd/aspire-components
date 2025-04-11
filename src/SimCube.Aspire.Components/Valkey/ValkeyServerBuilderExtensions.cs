@@ -28,25 +28,31 @@ public static class ValkeyServerBuilderExtensions
                 opt =>
                 {
                     opt.WithContainerName("valkey-commander");
+
                     if (keepRunning)
                     {
                         opt.WithLifetime(ContainerLifetime.Persistent);
                     }
+
+                    opt.WithUrlForEndpoint("http", u => u.DisplayText = "Redis Commander");
                 });
         }
 
         if (withRedisInsight)
         {
-            instance.WithRedisInsight(opt =>
-            {
-                opt.WithDataVolume();
-                opt.WithContainerName("valkey-insight");
-
-                if (keepRunning)
+            instance.WithRedisInsight(
+                opt =>
                 {
-                    opt.WithLifetime(ContainerLifetime.Persistent);
-                }
-            });
+                    opt.WithDataVolume();
+                    opt.WithContainerName("valkey-insight");
+
+                    if (keepRunning)
+                    {
+                        opt.WithLifetime(ContainerLifetime.Persistent);
+                    }
+
+                    opt.WithUrlForEndpoint("http", u => u.DisplayText = "Redis Insight");
+                });
         }
 
         return instance;

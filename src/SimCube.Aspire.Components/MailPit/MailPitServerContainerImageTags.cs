@@ -9,5 +9,5 @@ internal static class MailpitContainerImageTags
     public const string Image = "axllent/mailpit";
 
     /// <remarks>v1.22.0</remarks>
-    public const string Tag = "v1.22.0";
+    public const string Tag = "v1.24.0";
 }

@@ -44,7 +44,8 @@ public static class MailPitBuilderExtensions
                       .WithEnvironment(context =>
                       {
                           context.EnvironmentVariables[MailpitDatabaseEnvVar] = "/data/mailpit.db";
-                      });
+                      })
+                      .WithUrlForEndpoint(MailPitServerResource.HttpEndpointName, u => u.DisplayText = "Mailpit UI");
     }
 
     public static IResourceBuilder<MailPitServerResource> WithDataVolume(this IResourceBuilder<MailPitServerResource> builder, string name, bool isReadOnly = false)
