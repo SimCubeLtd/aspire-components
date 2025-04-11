@@ -1,5 +1,13 @@
 # Changelog
 
+## [9.1.0](https://github.com/SimCubeLtd/aspire-components/compare/v9.0.5...v9.1.0) (2025-04-11)
+
+
+### 🚀 New Features
+
+* update server configurations and dependencies ([36b9035](https://github.com/SimCubeLtd/aspire-components/commit/36b90354fb6f3f821e6265daffe7ee86d87bd39e))
+* update server configurations and dependencies ([a65e414](https://github.com/SimCubeLtd/aspire-components/commit/a65e41445c27f99bb6de6fd12bd923119e306849))
+
 ## [9.0.5](https://github.com/SimCubeLtd/aspire-components/compare/v9.0.4...v9.0.5) (2025-04-10)
 
 
