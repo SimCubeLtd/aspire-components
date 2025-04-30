@@ -2,12 +2,19 @@ namespace SimCube.Aspire.Components.Valkey;
 
 public static class ValkeyServerBuilderExtensions
 {
-    public static IResourceBuilder<ValkeyServerResource> AddValkeyServerInstance(this IDistributedApplicationBuilder builder, bool withRedisCommander = true, bool withRedisInsight = false)
+    public static IResourceBuilder<ValkeyServerResource> AddValkeyServerInstance(
+        this IDistributedApplicationBuilder builder,
+        bool withRedisCommander = true,
+        bool withRedisInsight = false,
+        string registry = "docker.io",
+        string tag = ValkeyServerContainerImageTags.Tag,
+        string redisCommanderTag = ValkeyServerContainerImageTags.RedisCommanderTag,
+        string redisInsightTag = ValkeyServerContainerImageTags.RedisInsightTag)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
         var instance = builder
-            .AddValkeyServer("valkey")
+            .AddValkeyServer("valkey", registry: registry, tag: tag)
             .WithContainerName("valkey");
 
         if (!builder.Volatile())
@@ -35,7 +42,7 @@ public static class ValkeyServerBuilderExtensions
                     }
 
                     opt.WithUrlForEndpoint("http", u => u.DisplayText = "Redis Commander");
-                });
+                }, registry: registry, tag: redisCommanderTag);
         }
 
         if (withRedisInsight)
@@ -52,7 +59,7 @@ public static class ValkeyServerBuilderExtensions
                     }
 
                     opt.WithUrlForEndpoint("http", u => u.DisplayText = "Redis Insight");
-                });
+                }, registry: registry, tag: redisInsightTag);
         }
 
         return instance;
@@ -62,7 +69,9 @@ public static class ValkeyServerBuilderExtensions
         this IDistributedApplicationBuilder builder,
         [ResourceName] string name,
         int? port = 6379,
-        IResourceBuilder<ParameterResource>? password = null)
+        IResourceBuilder<ParameterResource>? password = null,
+        string registry = "docker.io",
+        string tag = ValkeyServerContainerImageTags.Tag)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(name);
@@ -86,8 +95,8 @@ public static class ValkeyServerBuilderExtensions
 
         return builder.AddResource(valkey)
                       .WithEndpoint(port: port, targetPort: 6379, name: ValkeyServerResource.PrimaryEndpointName, isProxied: false)
-                      .WithImage(ValkeyServerContainerImageTags.Image, ValkeyServerContainerImageTags.Tag)
-                      .WithImageRegistry(ValkeyServerContainerImageTags.Registry)
+                      .WithImage(ValkeyServerContainerImageTags.Image, tag)
+                      .WithImageRegistry(registry)
                       .WithHealthCheck(healthCheckKey)
                       .EnsureCommandLineCallback();
     }
@@ -119,7 +128,7 @@ public static class ValkeyServerBuilderExtensions
         return builder;
     }
 
-    public static IResourceBuilder<ValkeyServerResource> WithRedisCommander(this IResourceBuilder<ValkeyServerResource> builder, Action<IResourceBuilder<RedisCommanderResource>>? configureContainer = null, string? containerName = null)
+    public static IResourceBuilder<ValkeyServerResource> WithRedisCommander(this IResourceBuilder<ValkeyServerResource> builder, Action<IResourceBuilder<RedisCommanderResource>>? configureContainer = null, string? containerName = null, string registry = "docker.io", string tag = ValkeyServerContainerImageTags.RedisCommanderTag)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
@@ -134,8 +143,8 @@ public static class ValkeyServerBuilderExtensions
 
         var resource = new RedisCommanderResource(containerName);
         var resourceBuilder = builder.ApplicationBuilder.AddResource(resource)
-            .WithImage(ValkeyServerContainerImageTags.RedisCommanderImage, ValkeyServerContainerImageTags.RedisCommanderTag)
-            .WithImageRegistry(ValkeyServerContainerImageTags.RedisCommanderRegistry)
+            .WithImage(ValkeyServerContainerImageTags.RedisCommanderImage, tag)
+            .WithImageRegistry(registry)
             .WithHttpEndpoint(port: 5052, targetPort: 8081, name: "http", isProxied: false)
             .ExcludeFromManifest();
 
@@ -176,7 +185,7 @@ public static class ValkeyServerBuilderExtensions
         return builder;
     }
 
-    public static IResourceBuilder<ValkeyServerResource> WithRedisInsight(this IResourceBuilder<ValkeyServerResource> builder, Action<IResourceBuilder<RedisInsightResource>>? configureContainer = null, string? containerName = null)
+    public static IResourceBuilder<ValkeyServerResource> WithRedisInsight(this IResourceBuilder<ValkeyServerResource> builder, Action<IResourceBuilder<RedisInsightResource>>? configureContainer = null, string? containerName = null, string registry = "docker.io", string tag = ValkeyServerContainerImageTags.RedisInsightTag)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
@@ -191,8 +200,8 @@ public static class ValkeyServerBuilderExtensions
 
         var resource = new RedisInsightResource(containerName);
         var resourceBuilder = builder.ApplicationBuilder.AddResource(resource)
-            .WithImage(ValkeyServerContainerImageTags.RedisInsightImage, ValkeyServerContainerImageTags.RedisInsightTag)
-            .WithImageRegistry(ValkeyServerContainerImageTags.RedisInsightRegistry)
+            .WithImage(ValkeyServerContainerImageTags.RedisInsightImage, tag)
+            .WithImageRegistry(registry)
             .WithHttpEndpoint(port: 5053, targetPort: 5540, name: "http", isProxied: false)
             .ExcludeFromManifest();
 
