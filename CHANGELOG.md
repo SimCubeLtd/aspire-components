@@ -1,5 +1,19 @@
 # Changelog
 
+## [9.2.0](https://github.com/SimCubeLtd/aspire-components/compare/v9.1.0...v9.2.0) (2025-04-30)
+
+
+### 🚀 New Features
+
+* add image registry and tag parameters to builder extensions ([3ca042a](https://github.com/SimCubeLtd/aspire-components/commit/3ca042a263d3359532289713032130b94d9ba21e))
+* add image registry and tag parameters to builder extensions ([99926eb](https://github.com/SimCubeLtd/aspire-components/commit/99926ebe381c44e9068562630de2de59c1164ad7))
+
+
+### ⚙️ Chores
+
+* **deps:** update all non-major dependencies to 9.2.1 ([3f82068](https://github.com/SimCubeLtd/aspire-components/commit/3f82068a00b7ed150e0bcbccd0d8196fb7782252))
+* **deps:** update all non-major dependencies to 9.2.1 ([86ed808](https://github.com/SimCubeLtd/aspire-components/commit/86ed808ea14a26b61918454dd0eb30c1945f6dfe))
+
 ## [9.1.0](https://github.com/SimCubeLtd/aspire-components/compare/v9.0.5...v9.1.0) (2025-04-11)
 
 
