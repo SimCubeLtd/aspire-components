@@ -2,12 +2,12 @@ namespace SimCube.Aspire.Components.LavinMQ;
 
 public static class LavinMQBuilderExtensions
 {
-    public static IResourceBuilder<LavinMQServerResource> AddLavinMQServerInstance(this IDistributedApplicationBuilder builder)
+    public static IResourceBuilder<LavinMQServerResource> AddLavinMQServerInstance(this IDistributedApplicationBuilder builder, string registry = "docker.io", string tag = LavinMQServerContainerImageTags.Tag)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
         var instance = builder
-            .AddLavinMQServerInstance("lavinmq")
+            .AddLavinMQServerInstance("lavinmq", registry: registry, tag: tag)
             .WithContainerName("lavinmq");
 
         if (builder.KeepContainersRunning())
@@ -29,7 +29,9 @@ public static class LavinMQBuilderExtensions
         IResourceBuilder<ParameterResource>? password = null,
         IResourceBuilder<ParameterResource>? virtualHost = null,
         int amqpPort = 5672,
-        int managementPort = 15672)
+        int managementPort = 15672,
+        string registry = "docker.io",
+        string tag = LavinMQServerContainerImageTags.Tag)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(name);
@@ -68,8 +70,8 @@ public static class LavinMQBuilderExtensions
         }, healthCheckKey);
 
         return builder.AddResource(instance)
-                      .WithImage(LavinMQServerContainerImageTags.Image, LavinMQServerContainerImageTags.Tag)
-                      .WithImageRegistry(LavinMQServerContainerImageTags.Registry)
+                      .WithImage(LavinMQServerContainerImageTags.Image, tag)
+                      .WithImageRegistry(registry)
                       .WithEndpoint(port: amqpPort, targetPort: 5672, name: LavinMQServerResource.PrimaryEndpointName, isProxied: false, scheme: "tcp")
                       .WithEndpoint(port: managementPort, targetPort: 15672, name: LavinMQServerResource.ManagementEndpointName, scheme: "http", isProxied: false)
                       .WithEnvironment(context =>

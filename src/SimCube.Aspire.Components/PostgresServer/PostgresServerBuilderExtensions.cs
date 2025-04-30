@@ -5,7 +5,13 @@ public static class PostgresServerBuilderExtensions
     private const string DefaultPassword = "SuperSecretPassword123!";
     private const string DefaultUsername = "postgres";
 
-    public static IResourceBuilder<PostgresServerResource> AddPostgresServerInstance(this IDistributedApplicationBuilder builder, bool withPgAdmin = true, string? initialization = null)
+    public static IResourceBuilder<PostgresServerResource> AddPostgresServerInstance(
+        this IDistributedApplicationBuilder builder,
+        bool withPgAdmin = true,
+        string? initialization = null,
+        string registry = "docker.io",
+        string tag = "17.2-alpine",
+        string pgAdminTag = "9.3")
     {
         var password = builder.AddParameter("postgresserver-password", DefaultPassword, secret: true);
         var username = builder.AddParameter("postgresserver-username", DefaultUsername, secret: true);
@@ -18,6 +24,8 @@ public static class PostgresServerBuilderExtensions
                     annotation.TargetPort = 5432;
                     annotation.IsProxied = false;
                 })
+            .WithImageTag(tag)
+            .WithImageRegistry(registry)
             .WithEnvironment("POSTGRES_PASSWORD", password)
             .WithContainerName("postgresql");
 
@@ -39,7 +47,8 @@ public static class PostgresServerBuilderExtensions
                 options =>
                 {
                     options.WithContainerName("pgadmin");
-                    options.WithImageTag("9.2.0");
+                    options.WithImageTag(pgAdminTag);
+                    options.WithImageRegistry(registry);
 
                     options.WithEndpoint("http", annotation =>
                     {

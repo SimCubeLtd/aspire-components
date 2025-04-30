@@ -4,7 +4,7 @@ public static class SqlServerBuilderExtensions
 {
     private const string DefaultPassword = "SuperSecretPassword123!";
 
-    public static IResourceBuilder<SqlServerServerResource> AddSqlServerInstance(this IDistributedApplicationBuilder builder)
+    public static IResourceBuilder<SqlServerServerResource> AddSqlServerInstance(this IDistributedApplicationBuilder builder, string registry = "mcr.microsoft.com", string tag = "2022-latest")
     {
         var password = builder.AddParameter("sqlserver-password", DefaultPassword, secret: true);
 
@@ -17,6 +17,8 @@ public static class SqlServerBuilderExtensions
                     annotation.IsProxied = false;
                 })
             .WithEnvironment("MSSQL_SA_PASSWORD", password)
+            .WithImageTag(tag)
+            .WithImageRegistry(registry)
             .WithContainerName("sqlserver");
 
         if (!builder.Volatile())

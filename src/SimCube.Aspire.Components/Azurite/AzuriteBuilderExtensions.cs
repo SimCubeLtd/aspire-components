@@ -1,13 +1,15 @@
+using SimCube.Aspire.Components.LavinMQ;
+
 namespace SimCube.Aspire.Components.Azurite;
 
 public static class AzuriteBuilderExtensions
 {
-    public static IResourceBuilder<AzuriteResource> AddAzuriteInstance(this IDistributedApplicationBuilder builder)
+    public static IResourceBuilder<AzuriteResource> AddAzuriteInstance(this IDistributedApplicationBuilder builder, string registry = "mcr.microsoft.com", string tag = AzuriteContainerImageTags.Tag)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
         var instance = builder
-            .AddAzurite("azurite")
+            .AddAzurite("azurite", registry: registry, tag: tag)
             .WithContainerName("azurite");
 
         if (builder.KeepContainersRunning())
@@ -27,7 +29,9 @@ public static class AzuriteBuilderExtensions
         [ResourceName] string name,
         int blobPort = 10000,
         int queuePort = 10001,
-        int tablePort = 10002)
+        int tablePort = 10002,
+        string registry = "mcr.microsoft.com",
+        string tag = AzuriteContainerImageTags.Tag)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(name);
@@ -54,8 +58,8 @@ public static class AzuriteBuilderExtensions
 
         return builder.AddResource(instance)
             .WithHealthCheck(healthCheckKey)
-            .WithImage(AzuriteContainerImageTags.Image, AzuriteContainerImageTags.Tag)
-            .WithImageRegistry(AzuriteContainerImageTags.Registry)
+            .WithImage(AzuriteContainerImageTags.Image, tag)
+            .WithImageRegistry(registry)
             .WithEndpoint(
                 AzuriteResource.BlobEndpointName, annotation =>
                 {

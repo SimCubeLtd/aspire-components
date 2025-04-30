@@ -4,12 +4,12 @@ public static class MailPitBuilderExtensions
 {
     private const string MailpitDatabaseEnvVar = "MP_DATABASE";
 
-    public static IResourceBuilder<MailPitServerResource> AddMailpitServerInstance(this IDistributedApplicationBuilder builder)
+    public static IResourceBuilder<MailPitServerResource> AddMailpitServerInstance(this IDistributedApplicationBuilder builder, string registry = "docker.io", string tag = MailpitContainerImageTags.Tag)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
         var instance = builder
-            .AddMailpit("mailpit")
+            .AddMailpit("mailpit", registry: registry, tag: tag)
             .WithContainerName("mailpit");
 
         if (builder.KeepContainersRunning())
@@ -28,7 +28,9 @@ public static class MailPitBuilderExtensions
     public static IResourceBuilder<MailPitServerResource> AddMailpit(this IDistributedApplicationBuilder builder,
         [ResourceName] string name,
         int? smtpPort = 1025,
-        int? httpPort = 8025)
+        int? httpPort = 8025,
+        string registry = "docker.io",
+        string tag = MailpitContainerImageTags.Tag)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(name);
@@ -36,8 +38,8 @@ public static class MailPitBuilderExtensions
         var instance = new MailPitServerResource(name);
 
         return builder.AddResource(instance)
-                      .WithImage(MailpitContainerImageTags.Image, MailpitContainerImageTags.Tag)
-                      .WithImageRegistry(MailpitContainerImageTags.Registry)
+                      .WithImage(MailpitContainerImageTags.Image, tag)
+                      .WithImageRegistry(registry)
                       .WithEndpoint(port: smtpPort, targetPort: 1025, name: MailPitServerResource.PrimaryEndpointName, isProxied: false)
                       .WithHttpEndpoint(port: httpPort, targetPort: 8025, name: MailPitServerResource.HttpEndpointName, isProxied: false)
                       .WithHttpHealthCheck(endpointName: MailPitServerResource.HttpEndpointName)
