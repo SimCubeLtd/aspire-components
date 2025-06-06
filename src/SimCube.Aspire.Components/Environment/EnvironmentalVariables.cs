@@ -12,4 +12,9 @@ public static class EnvironmentalVariables
     {
         public const string Volatile = Root + "CONTAINER_PERSISTENCE_VOLATILE";
     }
+
+    public static class ContainerNaming
+    {
+        public const string NamePrefix = Root + "NAME_PREFIX";
+    }
 }

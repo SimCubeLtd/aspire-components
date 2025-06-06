@@ -1,16 +1,24 @@
+using SimCube.Aspire.Components.Shared;
+
 namespace SimCube.Aspire.Components.MailPit;
 
 public static class MailPitBuilderExtensions
 {
     private const string MailpitDatabaseEnvVar = "MP_DATABASE";
 
-    public static IResourceBuilder<MailPitServerResource> AddMailpitServerInstance(this IDistributedApplicationBuilder builder, string registry = "docker.io", string tag = MailpitContainerImageTags.Tag)
+    public static IResourceBuilder<MailPitServerResource> AddMailpitServerInstance(this IDistributedApplicationBuilder builder,
+        string registry = "docker.io",
+        string tag = MailpitContainerImageTags.Tag,
+        string containerName = "mailpit",
+        string namePrefix = "")
     {
         ArgumentNullException.ThrowIfNull(builder);
 
+        var finalContainerName = containerName.GetFinalForm(namePrefix);
+
         var instance = builder
-            .AddMailpit("mailpit", registry: registry, tag: tag)
-            .WithContainerName("mailpit");
+            .AddMailpit(finalContainerName, registry: registry, tag: tag)
+            .WithContainerName(finalContainerName);
 
         if (builder.KeepContainersRunning())
         {
@@ -19,7 +27,7 @@ public static class MailPitBuilderExtensions
 
         if (!builder.Volatile())
         {
-            instance.WithDataVolume("mailpit-data", isReadOnly: false);
+            instance.WithDataVolume($"{finalContainerName}-data", isReadOnly: false);
         }
 
         return instance;

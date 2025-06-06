@@ -1,14 +1,22 @@
+using SimCube.Aspire.Components.Shared;
+
 namespace SimCube.Aspire.Components.LavinMQ;
 
 public static class LavinMQBuilderExtensions
 {
-    public static IResourceBuilder<LavinMQServerResource> AddLavinMQServerInstance(this IDistributedApplicationBuilder builder, string registry = "docker.io", string tag = LavinMQServerContainerImageTags.Tag)
+    public static IResourceBuilder<LavinMQServerResource> AddLavinMQServerInstance(this IDistributedApplicationBuilder builder,
+        string registry = "docker.io",
+        string tag = LavinMQServerContainerImageTags.Tag,
+        string containerName = "lavinmq",
+        string namePrefix = "")
     {
         ArgumentNullException.ThrowIfNull(builder);
 
+        var finalContainerName = containerName.GetFinalForm(namePrefix);
+
         var instance = builder
-            .AddLavinMQServerInstance("lavinmq", registry: registry, tag: tag)
-            .WithContainerName("lavinmq");
+            .AddLavinMQServerInstance(finalContainerName, registry: registry, tag: tag)
+            .WithContainerName(finalContainerName);
 
         if (builder.KeepContainersRunning())
         {
@@ -17,7 +25,7 @@ public static class LavinMQBuilderExtensions
 
         if (!builder.Volatile())
         {
-            instance.WithDataVolume("lavinmq-data", isReadOnly: false);
+            instance.WithDataVolume($"{finalContainerName}-data", isReadOnly: false);
         }
 
         return instance;
