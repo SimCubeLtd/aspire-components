@@ -1,3 +1,5 @@
+using SimCube.Aspire.Components.Shared;
+
 namespace SimCube.Aspire.Components.Valkey;
 
 public static class ValkeyServerBuilderExtensions
@@ -9,17 +11,21 @@ public static class ValkeyServerBuilderExtensions
         string registry = "docker.io",
         string tag = ValkeyServerContainerImageTags.Tag,
         string redisCommanderTag = ValkeyServerContainerImageTags.RedisCommanderTag,
-        string redisInsightTag = ValkeyServerContainerImageTags.RedisInsightTag)
+        string redisInsightTag = ValkeyServerContainerImageTags.RedisInsightTag,
+        string containerName = "valkey",
+        string namePrefix = "")
     {
         ArgumentNullException.ThrowIfNull(builder);
 
+        var finalContainerName = containerName.GetFinalForm(namePrefix);
+
         var instance = builder
-            .AddValkeyServer("valkey", registry: registry, tag: tag)
-            .WithContainerName("valkey");
+            .AddValkeyServer(finalContainerName, registry: registry, tag: tag)
+            .WithContainerName(finalContainerName);
 
         if (!builder.Volatile())
         {
-            instance.WithDataVolume(isReadOnly: false);
+            instance.WithDataVolume(namePrefix, isReadOnly: false);
         }
 
         var keepRunning = builder.KeepContainersRunning();
@@ -34,7 +40,7 @@ public static class ValkeyServerBuilderExtensions
             instance.WithRedisCommander(
                 opt =>
                 {
-                    opt.WithContainerName("valkey-commander");
+                    opt.WithContainerName("valkey-commander".GetFinalForm(namePrefix));
 
                     if (keepRunning)
                     {
@@ -50,8 +56,8 @@ public static class ValkeyServerBuilderExtensions
             instance.WithRedisInsight(
                 opt =>
                 {
-                    opt.WithDataVolume();
-                    opt.WithContainerName("valkey-insight");
+                    opt.WithDataVolume(namePrefix);
+                    opt.WithContainerName("valkey-insight".GetFinalForm(namePrefix));
 
                     if (keepRunning)
                     {
@@ -447,11 +453,12 @@ public static class ValkeyServerBuilderExtensions
         });
     }
 
-    public static IResourceBuilder<ValkeyServerResource> WithDataVolume(this IResourceBuilder<ValkeyServerResource> builder, bool isReadOnly = false)
+    public static IResourceBuilder<ValkeyServerResource> WithDataVolume(this IResourceBuilder<ValkeyServerResource> builder,
+        string namePrefix, bool isReadOnly = false)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        builder.WithVolume("valkey-data", "/data", isReadOnly);
+        builder.WithVolume("valkey-data".GetFinalForm(namePrefix), "/data", isReadOnly);
         if (!isReadOnly)
         {
             builder.WithPersistence();
@@ -487,11 +494,12 @@ public static class ValkeyServerBuilderExtensions
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("ApiDesign", "RS0026:Do not add multiple public overloads with optional parameters", Justification = "Each overload targets a different resource builder type, allowing for tailored functionality. Optional volume names enhance usability, enabling users to easily provide custom names while maintaining clear and distinct method signatures.")]
-    public static IResourceBuilder<RedisInsightResource> WithDataVolume(this IResourceBuilder<RedisInsightResource> builder)
+    public static IResourceBuilder<RedisInsightResource> WithDataVolume(this IResourceBuilder<RedisInsightResource> builder,
+        string namePrefix)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        return builder.WithVolume("redisinsight-data", "/data");
+        return builder.WithVolume("redisinsight-data".GetFinalForm(namePrefix), "/data");
     }
 
     public static IResourceBuilder<RedisInsightResource> WithDataBindMount(this IResourceBuilder<RedisInsightResource> builder, string source)

@@ -1,3 +1,5 @@
+using SimCube.Aspire.Components.Shared;
+
 namespace SimCube.Aspire.Components.PostgresServer;
 
 public static class PostgresServerBuilderExtensions
@@ -11,12 +13,16 @@ public static class PostgresServerBuilderExtensions
         string? initialization = null,
         string registry = "docker.io",
         string tag = "17.2-alpine",
-        string pgAdminTag = "9.3")
+        string pgAdminTag = "9.3",
+        string containerName = "postgresql",
+        string namePrefix = "")
     {
         var password = builder.AddParameter("postgresserver-password", DefaultPassword, secret: true);
         var username = builder.AddParameter("postgresserver-username", DefaultUsername, secret: true);
 
-        var instance = builder.AddPostgres("postgresserver", userName: username, password: password, port: 5432)
+        var finalContainerName = containerName.GetFinalForm(namePrefix);
+
+        var instance = builder.AddPostgres("postgresserver".GetFinalForm(namePrefix), userName: username, password: password, port: 5432)
             .WithEndpoint(
                 "tcp", annotation =>
                 {
@@ -27,11 +33,11 @@ public static class PostgresServerBuilderExtensions
             .WithImageTag(tag)
             .WithImageRegistry(registry)
             .WithEnvironment("POSTGRES_PASSWORD", password)
-            .WithContainerName("postgresql");
+            .WithContainerName(finalContainerName);
 
         if (!builder.Volatile())
         {
-            instance.WithDataVolume(isReadOnly: false, name: "postgres-data");
+            instance.WithDataVolume(isReadOnly: false, name: $"{finalContainerName}-data");
         }
 
         var keepRunning = builder.KeepContainersRunning();
@@ -46,7 +52,7 @@ public static class PostgresServerBuilderExtensions
             instance.WithPgAdmin(
                 options =>
                 {
-                    options.WithContainerName("pgadmin");
+                    options.WithContainerName("pgadmin".GetFinalForm(namePrefix));
                     options.WithImageTag(pgAdminTag);
                     options.WithImageRegistry(registry);
 

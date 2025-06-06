@@ -1,16 +1,22 @@
-using SimCube.Aspire.Components.LavinMQ;
+using SimCube.Aspire.Components.Shared;
 
 namespace SimCube.Aspire.Components.Azurite;
 
 public static class AzuriteBuilderExtensions
 {
-    public static IResourceBuilder<AzuriteResource> AddAzuriteInstance(this IDistributedApplicationBuilder builder, string registry = "mcr.microsoft.com", string tag = AzuriteContainerImageTags.Tag)
+    public static IResourceBuilder<AzuriteResource> AddAzuriteInstance(this IDistributedApplicationBuilder builder,
+        string registry = "mcr.microsoft.com",
+        string tag = AzuriteContainerImageTags.Tag,
+        string containerName = "azurite",
+        string namePrefix = "")
     {
         ArgumentNullException.ThrowIfNull(builder);
 
+        var finalContainerName = containerName.GetFinalForm(namePrefix);
+
         var instance = builder
-            .AddAzurite("azurite", registry: registry, tag: tag)
-            .WithContainerName("azurite");
+            .AddAzurite(finalContainerName, registry: registry, tag: tag)
+            .WithContainerName(finalContainerName);
 
         if (builder.KeepContainersRunning())
         {
@@ -19,11 +25,13 @@ public static class AzuriteBuilderExtensions
 
         if (!builder.Volatile())
         {
-            instance.WithDataVolume("azurite-data", isReadOnly: false);
+            instance.WithDataVolume($"{finalContainerName}-data", isReadOnly: false);
         }
 
         return instance;
     }
+
+
 
     public static IResourceBuilder<AzuriteResource> AddAzurite(this IDistributedApplicationBuilder builder,
         [ResourceName] string name,

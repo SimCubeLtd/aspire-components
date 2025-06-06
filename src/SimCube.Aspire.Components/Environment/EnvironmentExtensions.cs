@@ -13,4 +13,15 @@ public static class EnvironmentExtensions
         var setting = System.Environment.GetEnvironmentVariable(EnvironmentalVariables.ContainerPersistence.Volatile);
         return !string.IsNullOrEmpty(setting) && Convert.ToBoolean(setting);
     }
+
+    public static string? GetNamePrefix()
+    {
+        var containerName = System.Environment.GetEnvironmentVariable(EnvironmentalVariables.ContainerNaming.NamePrefix);
+        if (!string.IsNullOrEmpty(containerName))
+        {
+            return containerName;
+        }
+
+        return null;
+    }
 }
