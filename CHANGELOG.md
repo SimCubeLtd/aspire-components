@@ -1,5 +1,18 @@
 # Changelog
 
+## [9.3.0](https://github.com/SimCubeLtd/aspire-components/compare/v9.2.0...v9.3.0) (2025-06-06)
+
+
+### 🚀 New Features
+
+* Add name prefix options ([a007822](https://github.com/SimCubeLtd/aspire-components/commit/a007822de21bab5afb6126430ce3cfa038fc0dc9))
+
+
+### 🔥 Bug Fixes
+
+* update test project to 9.3.0 too ([a822248](https://github.com/SimCubeLtd/aspire-components/commit/a8222489f6da7fa3e7c73012310fc7e81cb2563e))
+* update test project to 9.3.0 too ([7d3b1e8](https://github.com/SimCubeLtd/aspire-components/commit/7d3b1e86a11b897c304bda28eba6557d90ead518))
+
 ## [9.2.0](https://github.com/SimCubeLtd/aspire-components/compare/v9.1.0...v9.2.0) (2025-04-30)
 
 
